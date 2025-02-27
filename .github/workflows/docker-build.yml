@@ -1,9 +1,10 @@
-name: Build and Push Docker Image
+name: Build Docker Image
 
 on:
   push:
     branches:
-      - main  # Triggers the workflow on push to main branch
+      - main  # Run workflow on push to main branch
+  pull_request:
 
 jobs:
   build:
@@ -16,16 +17,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/my-nginx-app:latest
+      - name: Build Docker Image (No Push)
+        run: |
+          docker build -t my-nginx-app .
